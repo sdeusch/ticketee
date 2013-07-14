@@ -1,9 +1,34 @@
 Ticketee::Application.routes.draw do
+
+  root to: "projects#index"
+
+  get "/signin", to: "sessions#new"
+  post "/signin", to: "sessions#create"
+
+  delete "/signout", to: "sessions#destroy", as: "signout"
+
+  resources :projects do
+    resources :tickets
+  end
+
+  namespace :admin do
+    root to: "base#index"
+    resources :users do
+      resources :permissions
+      put "permissions", to: "permissions#set",
+                         as: "set_permissions"
+    end
+  end
+
+  resources :users
+
+  resources :files
+  
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+  # root to: 'welcome#index'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
@@ -39,13 +64,6 @@ Ticketee::Application.routes.draw do
   #       get 'recent', on: :collection
   #     end
   #   end
-  
-  # Example resource route with concerns:
-  #   concern :toggleable do
-  #     post 'toggle'
-  #   end
-  #   resources :posts, concerns: :toggleable
-  #   resources :photos, concerns: :toggleable
 
   # Example resource route within a namespace:
   #   namespace :admin do
